@@ -194,7 +194,21 @@
         pronouns (concat [path] (u/vec-coerce alts))
         pronoun-declensions (filter some? (map #(lookup-pronouns
                                                  (escape-html %))
-                                               pronouns))]
+                                               pronouns))
+        if-replace (fn [pron inx]
+                      (if (contains? params pron)
+                        (assoc pronoun-declensions inx (params pron))
+                      ))
+        pronoun-declensions (if-replace "subj"    0)
+        pronoun-declensions (if-replace "obj"     1)
+        pronoun-declensions (if-replace "pos-det" 2)
+        pronoun-declensions (if-replace "pos"     3)
+        pronoun-declensions (if-replace "refl"    4)]
+
+    ;; format-pronoun-examples args
+    ;;  0       1      2                     3                  4
+    ;; [subject object possessive-determiner possessive-pronoun reflexive]
+
     (if (seq pronoun-declensions)
       (format-pronoun-examples pronoun-declensions)
       (not-found))))
